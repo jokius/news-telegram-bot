@@ -2,7 +2,7 @@ include .env.example
 export
 
 compose-up:
-	docker-compose up --build -d postgres rabbitmq && docker-compose logs -f
+	docker-compose up --build -d postgres && docker-compose logs -f
 .PHONY: compose-up
 
 compose-up-integration-test:
@@ -13,13 +13,9 @@ compose-down:
 	docker-compose down --remove-orphans
 .PHONY: compose-down
 
-swag-v1:
-	swag init -g internal/controller/http/v1/router.go
-.PHONY: swag-v1
-
-run: swag-v1
+run:
 	go mod tidy && go mod download && \
-	DISABLE_SWAGGER_HTTP_HANDLER='' GIN_MODE=debug CGO_ENABLED=0 go run -tags migrate ./cmd/app
+	GIN_MODE=debug CGO_ENABLED=0 go run -tags migrate ./cmd/app
 .PHONY: run
 
 docker-rm-volume:
@@ -49,10 +45,6 @@ integration-test:
 mock:
 	mockery --all -r --case snake
 .PHONY: mock
-
-migrate-create:
-	migrate create -ext sql -dir migrations 'migrate_name'
-.PHONY: migrate-create
 
 migrate-up:
 	migrate -path migrations -database '$(PG_URL)?sslmode=disable' up
