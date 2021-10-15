@@ -131,7 +131,3 @@ issues:
     - path: internal/controller/http
       linters:
         - godot
-
-run:
-  skip-dirs:
-    - docs
