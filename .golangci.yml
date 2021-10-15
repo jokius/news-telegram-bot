@@ -1,6 +1,4 @@
 linters-settings:
-  gci:
-    local-prefixes: github.com/jokius/news-telegram-bot
   dupl:
     threshold: 100
   errorlint:
