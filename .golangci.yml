@@ -29,8 +29,6 @@ linters-settings:
     disabled-checks:
       - dupImport
       - unnecessaryBlock
-  gofumpt:
-    extra-rules: true
   gomnd:
     settings:
       mnd:
@@ -78,7 +76,6 @@ linters:
     - godox
     - goerr113
     - gofmt
-    - gofumpt
     - goimports
     - gomnd
     - gomodguard
