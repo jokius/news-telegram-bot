@@ -2,19 +2,19 @@
 package postgres
 
 import (
-	"context"
 	"fmt"
-	"log"
 	"time"
 
-	"github.com/Masterminds/squirrel"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 const (
 	_defaultMaxPoolSize  = 1
 	_defaultConnAttempts = 10
 	_defaultConnTimeout  = time.Second
+	_defaultDebug        = false
 )
 
 // Postgres -.
@@ -22,9 +22,8 @@ type Postgres struct {
 	maxPoolSize  int
 	connAttempts int
 	connTimeout  time.Duration
-
-	Builder squirrel.StatementBuilderType
-	Pool    *pgxpool.Pool
+	debug        bool
+	Query        *gorm.DB
 }
 
 // New -.
@@ -33,45 +32,33 @@ func New(url string, opts ...Option) (*Postgres, error) {
 		maxPoolSize:  _defaultMaxPoolSize,
 		connAttempts: _defaultConnAttempts,
 		connTimeout:  _defaultConnTimeout,
+		debug:        _defaultDebug,
 	}
 
-	// Custom options
+	// set custom options
 	for _, opt := range opts {
 		opt(pg)
 	}
 
-	pg.Builder = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
+	loggerLevel := logger.Silent
+	if pg.debug {
+		loggerLevel = logger.Info
+	}
 
-	poolConfig, err := pgxpool.ParseConfig(url)
+	connect, err := gorm.Open(postgres.Open(url), &gorm.Config{Logger: logger.Default.LogMode(loggerLevel)})
 	if err != nil {
-		return nil, fmt.Errorf("postgres - NewPostgres - pgxpool.ParseConfig: %w", err)
+		return nil, fmt.Errorf("failed to open connection: %w", err)
 	}
 
-	poolConfig.MaxConns = int32(pg.maxPoolSize)
-
-	for pg.connAttempts > 0 {
-		pg.Pool, err = pgxpool.ConnectConfig(context.Background(), poolConfig)
-		if err == nil {
-			break
-		}
-
-		log.Printf("Postgres is trying to connect, attempts left: %d", pg.connAttempts)
-
-		time.Sleep(pg.connTimeout)
-
-		pg.connAttempts--
-	}
-
+	sqlDB, err := connect.DB()
 	if err != nil {
-		return nil, fmt.Errorf("postgres - NewPostgres - connAttempts == 0: %w", err)
+		return nil, fmt.Errorf("failed to connect DB: %w", err)
 	}
+
+	sqlDB.SetConnMaxLifetime(pg.connTimeout)
+	sqlDB.SetMaxIdleConns(pg.connAttempts)
+	sqlDB.SetMaxOpenConns(pg.maxPoolSize)
+	pg.Query = connect
 
 	return pg, nil
-}
-
-// Close -.
-func (p *Postgres) Close() {
-	if p.Pool != nil {
-		p.Pool.Close()
-	}
 }
