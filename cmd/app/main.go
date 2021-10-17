@@ -4,9 +4,8 @@ import (
 	"log"
 
 	"github.com/ilyakaznacheev/cleanenv"
-
-	"github.com/evrone/go-clean-template/config"
-	"github.com/evrone/go-clean-template/internal/app"
+	"github.com/jokius/news-telegram-bot/config"
+	"github.com/jokius/news-telegram-bot/internal/app"
 )
 
 func main() {
