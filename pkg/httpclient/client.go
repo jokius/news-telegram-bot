@@ -2,22 +2,23 @@
 package httpclient
 
 import (
+	"bytes"
 	"context"
 	"net/http"
 	"time"
 )
 
-const (
-	_defaultTimeout = 10 * time.Second
-)
-
-// Client -.
+// Client - simple web client.
 type Client struct {
 	client *http.Client
 }
 
-// New -.
-func New(handler http.Handler, opts ...Option) *Client {
+const (
+	_defaultTimeout = 10 * time.Second
+)
+
+// NewClient - init new Client.
+func NewClient(opts ...Option) *Client {
 	httpClient := &http.Client{
 		Timeout: _defaultTimeout,
 	}
@@ -34,9 +35,22 @@ func New(handler http.Handler, opts ...Option) *Client {
 	return s
 }
 
+// Get - GET request with timeout.
 func (s *Client) Get(url string) (*http.Response, error) {
 	ctx := context.Background()
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req)
+}
+
+// Post - POST request with timeout.
+func (s *Client) Post(url string, body []byte) (*http.Response, error) {
+	ctx := context.Background()
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(body))
 
 	if err != nil {
 		return nil, err
