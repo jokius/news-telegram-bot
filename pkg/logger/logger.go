@@ -8,6 +8,8 @@ import (
 	"github.com/rs/zerolog"
 )
 
+//go:generate mockgen -source=logger.go -destination=../mocks/logger_mocks.go -package=mocks
+
 // Interface -.
 type Interface interface {
 	Debug(message interface{}, args ...interface{})

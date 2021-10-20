@@ -7,7 +7,7 @@ import (
 	"github.com/evrone/go-clean-template/internal/entity"
 )
 
-//go:generate mockgen -source=interfaces.go -destination=./mocks_test.go -package=usecase_test
+//go:generate mockgen -source=interfaces.go -destination=../../pkg/mocks/interfaces_mocks.go -package=mocks
 
 type (
 	// Translation -.
