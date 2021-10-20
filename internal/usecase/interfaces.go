@@ -2,28 +2,50 @@
 package usecase
 
 import (
-	"context"
+	"time"
 
-	"github.com/evrone/go-clean-template/internal/entity"
+	"github.com/jokius/news-telegram-bot/internal/entity"
 )
 
 //go:generate mockgen -source=interfaces.go -destination=../../pkg/mocks/interfaces_mocks.go -package=mocks
 
 type (
-	// Translation -.
-	Translation interface {
-		Translate(context.Context, entity.Translation) (entity.Translation, error)
-		History(context.Context) ([]entity.Translation, error)
+	// User - base user cases.
+	User interface {
+		TelegramCallback(entity.TelegramResult) error
+		AuthToken(id, code string)
 	}
 
-	// TranslationRepo -.
-	TranslationRepo interface {
-		Store(context.Context, entity.Translation) error
-		GetHistory(context.Context) ([]entity.Translation, error)
+	// Messenger - send message to telegram.
+	Messenger interface {
+		Auth(id string, source Source)
+		URLAdded(id string)
+		RemovedGroup(id string)
+		StartDateUpdated(id string)
+		GroupList(id string)
+		IncorrectFormat(id, command string)
+		UnknownSource(id, url string)
+		UnknownError(id, text string)
 	}
 
-	// TranslationWebAPI -.
-	TranslationWebAPI interface {
-		Translate(entity.Translation) (entity.Translation, error)
+	// Source - to work with groups source.
+	Source interface {
+		Name() string
+		AuthURL() (url string)
+		GetToken(code string) (token string, err error)
+		GetGroupsMessages()
+	}
+
+	// UserRepo - user db interaction.
+	UserRepo interface {
+		AddToken(id, token, sourceName string) (err error)
+		AddGroupByURL(id, url string) (err error)
+		UpdateStartDate(id string, date time.Time) (err error)
+		RemoveGroup(id, url string) (err error)
+	}
+
+	// UserWebAPI - user web interaction.
+	UserWebAPI interface {
+		VkCallback(*entity.User) (entity.User, error)
 	}
 )
