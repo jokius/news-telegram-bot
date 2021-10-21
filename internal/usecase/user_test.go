@@ -39,20 +39,20 @@ func user(t *testing.T) (*usecase.UserUseCase, *mocks.MockMessenger, *mocks.Mock
 	messenger := mocks.NewMockMessenger(mockCtl)
 	source := mocks.NewMockSource(mockCtl)
 
-	translation := usecase.NewUserUseCase(repo, webAPI, messenger, source)
+	newUser := usecase.NewUserUseCase(repo, webAPI, messenger, source)
 
-	return translation, messenger, source, repo
+	return newUser, messenger, source, repo
 }
 
 func TestTelegramCallback_correct(t *testing.T) {
 	t.Parallel()
 
-	userCase, message, source, repo := user(t)
+	userCase, message, _, repo := user(t)
 
 	t.Run("when add_vk", func(t *testing.T) {
 		t.Parallel()
 
-		message.EXPECT().Auth(userID, source).Return().Times(1)
+		message.EXPECT().Auth(userID).Return().Times(1)
 		err := userCase.TelegramCallback(telegramResult("/add_vk"))
 		require.ErrorIs(t, err, nil)
 	})

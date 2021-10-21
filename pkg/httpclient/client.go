@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+//go:generate mockgen -source=client.go -destination=../mocks/client_mocks.go -package=mocks
+
+// InterfaceClient - for mock.
+type InterfaceClient interface {
+	Get(url string) (*http.Response, error)
+	Post(url string, body []byte) (*http.Response, error)
+}
+
 // Client - simple web client.
 type Client struct {
 	client *http.Client

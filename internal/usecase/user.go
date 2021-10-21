@@ -42,7 +42,7 @@ func (uc *UserUseCase) TelegramCallback(telegramResult entity.TelegramResult) (e
 
 	switch {
 	case text == "/add_vk":
-		uc.msg.Auth(id, uc.source)
+		uc.msg.Auth(id)
 	case len(textSlice) >= commandWithParams:
 		uc.messageWithParams(textSlice, id)
 	default:

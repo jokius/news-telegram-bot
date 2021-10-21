@@ -10,7 +10,6 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/jokius/news-telegram-bot/internal/entity"
-	usecase "github.com/jokius/news-telegram-bot/internal/usecase"
 )
 
 // MockUser is a mock of User interface.
@@ -86,27 +85,27 @@ func (m *MockMessenger) EXPECT() *MockMessengerMockRecorder {
 }
 
 // Auth mocks base method.
-func (m *MockMessenger) Auth(id string, source usecase.Source) {
+func (m *MockMessenger) Auth(id string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Auth", id, source)
+	m.ctrl.Call(m, "Auth", id)
 }
 
 // Auth indicates an expected call of Auth.
-func (mr *MockMessengerMockRecorder) Auth(id, source interface{}) *gomock.Call {
+func (mr *MockMessengerMockRecorder) Auth(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Auth", reflect.TypeOf((*MockMessenger)(nil).Auth), id, source)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Auth", reflect.TypeOf((*MockMessenger)(nil).Auth), id)
 }
 
 // GroupList mocks base method.
-func (m *MockMessenger) GroupList(id string) {
+func (m *MockMessenger) GroupList(id string, groups []string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "GroupList", id)
+	m.ctrl.Call(m, "GroupList", id, groups)
 }
 
 // GroupList indicates an expected call of GroupList.
-func (mr *MockMessengerMockRecorder) GroupList(id interface{}) *gomock.Call {
+func (mr *MockMessengerMockRecorder) GroupList(id, groups interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GroupList", reflect.TypeOf((*MockMessenger)(nil).GroupList), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GroupList", reflect.TypeOf((*MockMessenger)(nil).GroupList), id, groups)
 }
 
 // IncorrectFormat mocks base method.

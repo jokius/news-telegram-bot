@@ -18,11 +18,11 @@ type (
 
 	// Messenger - send message to telegram.
 	Messenger interface {
-		Auth(id string, source Source)
+		Auth(id string)
 		URLAdded(id string)
 		RemovedGroup(id string)
 		StartDateUpdated(id string)
-		GroupList(id string)
+		GroupList(id string, groups []string)
 		IncorrectFormat(id, command string)
 		UnknownSource(id, url string)
 		UnknownError(id, text string)
