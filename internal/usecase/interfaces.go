@@ -42,6 +42,7 @@ type (
 		AddGroupByURL(id, url string) (err error)
 		UpdateStartDate(id string, date time.Time) (err error)
 		RemoveGroup(id, url string) (err error)
+		Groups(id string) (groups []entity.Group, err error)
 	}
 
 	// UserWebAPI - user web interaction.

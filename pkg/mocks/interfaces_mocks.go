@@ -309,6 +309,21 @@ func (mr *MockUserRepoMockRecorder) AddToken(id, token, sourceName interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddToken", reflect.TypeOf((*MockUserRepo)(nil).AddToken), id, token, sourceName)
 }
 
+// Groups mocks base method.
+func (m *MockUserRepo) Groups(id string) ([]entity.Group, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Groups", id)
+	ret0, _ := ret[0].([]entity.Group)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Groups indicates an expected call of Groups.
+func (mr *MockUserRepoMockRecorder) Groups(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Groups", reflect.TypeOf((*MockUserRepo)(nil).Groups), id)
+}
+
 // RemoveGroup mocks base method.
 func (m *MockUserRepo) RemoveGroup(id, url string) error {
 	m.ctrl.T.Helper()

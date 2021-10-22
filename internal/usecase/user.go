@@ -43,6 +43,8 @@ func (uc *UserUseCase) TelegramCallback(telegramResult entity.TelegramResult) (e
 	switch {
 	case text == "/add_vk":
 		uc.msg.Auth(id)
+	case text == "/list":
+		uc.groupList(id)
 	case len(textSlice) >= commandWithParams:
 		uc.messageWithParams(textSlice, id)
 	default:
@@ -65,6 +67,22 @@ func (uc *UserUseCase) AuthToken(id, code string) {
 	if err != nil {
 		uc.msg.UnknownError(id, "something wrong: "+err.Error())
 	}
+}
+
+func (uc *UserUseCase) groupList(id string) {
+	groups, err := uc.repo.Groups(id)
+	if err != nil {
+		uc.msg.UnknownError(id, "something wrong: "+err.Error())
+
+		return
+	}
+
+	list := make([]string, len(groups))
+	for i := range groups {
+		list[i] = groups[i].GroupLink
+	}
+
+	uc.msg.GroupList(id, list)
 }
 
 func (uc *UserUseCase) messageWithParams(textSlice []string, id string) {

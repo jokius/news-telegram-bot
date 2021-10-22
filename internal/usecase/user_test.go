@@ -86,6 +86,17 @@ func TestTelegramCallback_correct(t *testing.T) {
 		err := userCase.TelegramCallback(telegramResult("/del_group https://example.com/1"))
 		require.ErrorIs(t, err, nil)
 	})
+
+	t.Run("when list", func(t *testing.T) {
+		t.Parallel()
+
+		listStr := []string{"1"}
+		listGroups := []entity.Group{{GroupLink: "1"}}
+		repo.EXPECT().Groups(userID).Return(listGroups, nil).Times(1)
+		message.EXPECT().GroupList(userID, listStr).Times(1)
+		err := userCase.TelegramCallback(telegramResult("/list"))
+		require.ErrorIs(t, err, nil)
+	})
 }
 
 func TestTelegramCallback_with_db_error(t *testing.T) {
@@ -121,6 +132,15 @@ func TestTelegramCallback_with_db_error(t *testing.T) {
 		repo.EXPECT().RemoveGroup(userID, "https://example.com/1").Return(errBD).Times(1) // any error
 		message.EXPECT().UnknownError(userID, "something wrong: "+errBD.Error()).Return().Times(1)
 		err := userCase.TelegramCallback(telegramResult("/del_group https://example.com/1"))
+		require.ErrorIs(t, err, nil)
+	})
+
+	t.Run("when list", func(t *testing.T) {
+		t.Parallel()
+
+		repo.EXPECT().Groups(userID).Return([]entity.Group{}, errBD).Times(1) // any error
+		message.EXPECT().UnknownError(userID, "something wrong: "+errBD.Error()).Return().Times(1)
+		err := userCase.TelegramCallback(telegramResult("/list"))
 		require.ErrorIs(t, err, nil)
 	})
 }
