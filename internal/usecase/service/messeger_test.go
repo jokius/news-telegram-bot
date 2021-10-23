@@ -27,7 +27,7 @@ func marshalJSON(text string) ([]byte, error) {
 	return json.Marshal(params)
 }
 
-func messenger(t *testing.T) (*service.Messenger, *mocks.MockInterfaceClient, *mocks.MockSource) {
+func messenger(t *testing.T) (*service.Messenger, *mocks.MockInterfaceClient) {
 	t.Helper()
 
 	mockCtl := gomock.NewController(t)
@@ -37,30 +37,13 @@ func messenger(t *testing.T) (*service.Messenger, *mocks.MockInterfaceClient, *m
 
 	newMessenger := service.NewMessenger(token, testBaseURL, client, source, logger)
 
-	return newMessenger, client, source
-}
-
-func TestAuth(t *testing.T) {
-	t.Parallel()
-
-	serviceMessenger, client, source := messenger(t)
-
-	t.Run("send message to user", func(t *testing.T) {
-		t.Parallel()
-
-		authURL := "https://auth_url.example"
-		source.EXPECT().AuthURL().Return(authURL).Times(1)
-		body, err := marshalJSON("Ссылка для привязки соц сети: " + authURL)
-		require.ErrorIs(t, err, nil)
-		client.EXPECT().Post(url, body).Times(1)
-		serviceMessenger.Auth(userID)
-	})
+	return newMessenger, client
 }
 
 func TestURLAdded(t *testing.T) {
 	t.Parallel()
 
-	serviceMessenger, client, _ := messenger(t)
+	serviceMessenger, client := messenger(t)
 
 	t.Run("send message to user", func(t *testing.T) {
 		t.Parallel()
@@ -75,7 +58,7 @@ func TestURLAdded(t *testing.T) {
 func TestRemovedGroup(t *testing.T) {
 	t.Parallel()
 
-	serviceMessenger, client, _ := messenger(t)
+	serviceMessenger, client := messenger(t)
 
 	t.Run("send message to user", func(t *testing.T) {
 		t.Parallel()
@@ -90,7 +73,7 @@ func TestRemovedGroup(t *testing.T) {
 func TestStartDateUpdated(t *testing.T) {
 	t.Parallel()
 
-	serviceMessenger, client, _ := messenger(t)
+	serviceMessenger, client := messenger(t)
 
 	t.Run("send message to user", func(t *testing.T) {
 		t.Parallel()
@@ -105,7 +88,7 @@ func TestStartDateUpdated(t *testing.T) {
 func TestGroupList(t *testing.T) {
 	t.Parallel()
 
-	serviceMessenger, client, _ := messenger(t)
+	serviceMessenger, client := messenger(t)
 
 	t.Run("send message to user", func(t *testing.T) {
 		t.Parallel()
@@ -122,7 +105,7 @@ func TestGroupList(t *testing.T) {
 func TestIncorrectFormat(t *testing.T) {
 	t.Parallel()
 
-	serviceMessenger, client, _ := messenger(t)
+	serviceMessenger, client := messenger(t)
 
 	t.Run("send message to user add_url", func(t *testing.T) {
 		t.Parallel()
@@ -164,7 +147,7 @@ func TestIncorrectFormat(t *testing.T) {
 func TestUnknownSource(t *testing.T) {
 	t.Parallel()
 
-	serviceMessenger, client, _ := messenger(t)
+	serviceMessenger, client := messenger(t)
 
 	t.Run("send message to user", func(t *testing.T) {
 		t.Parallel()
@@ -180,7 +163,7 @@ func TestUnknownSource(t *testing.T) {
 func TestUnknownError(t *testing.T) {
 	t.Parallel()
 
-	serviceMessenger, client, _ := messenger(t)
+	serviceMessenger, client := messenger(t)
 
 	t.Run("send message to user", func(t *testing.T) {
 		t.Parallel()

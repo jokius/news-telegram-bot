@@ -13,12 +13,10 @@ type (
 	// User - base user cases.
 	User interface {
 		TelegramCallback(entity.TelegramResult) error
-		AuthToken(id, code string)
 	}
 
 	// Messenger - send message to telegram.
 	Messenger interface {
-		Auth(id string)
 		URLAdded(id string)
 		RemovedGroup(id string)
 		StartDateUpdated(id string)
@@ -31,22 +29,14 @@ type (
 	// Source - to work with groups source.
 	Source interface {
 		Name() string
-		AuthURL() (url string)
-		GetToken(code string) (token string, err error)
-		GetGroupsMessages()
+		GetGroupMessages()
 	}
 
 	// UserRepo - user db interaction.
 	UserRepo interface {
-		AddToken(id, token, sourceName string) (err error)
 		AddGroupByURL(id, url string) (err error)
 		UpdateStartDate(id string, date time.Time) (err error)
 		RemoveGroup(id, url string) (err error)
 		Groups(id string) (groups []entity.Group, err error)
-	}
-
-	// UserWebAPI - user web interaction.
-	UserWebAPI interface {
-		VkCallback(*entity.User) (entity.User, error)
 	}
 )

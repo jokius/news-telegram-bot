@@ -13,7 +13,6 @@ import (
 // UserUseCase -.
 type UserUseCase struct {
 	repo   UserRepo
-	webAPI UserWebAPI
 	msg    Messenger
 	source Source
 }
@@ -23,8 +22,8 @@ const (
 )
 
 // NewUserUseCase - init.
-func NewUserUseCase(r UserRepo, w UserWebAPI, m Messenger, s Source) *UserUseCase {
-	return &UserUseCase{r, w, m, s}
+func NewUserUseCase(r UserRepo, m Messenger, s Source) *UserUseCase {
+	return &UserUseCase{r, m, s}
 }
 
 // TelegramCallback - parse telegram callback.
@@ -41,8 +40,6 @@ func (uc *UserUseCase) TelegramCallback(telegramResult entity.TelegramResult) (e
 	textSlice := strings.Split(text, " ")
 
 	switch {
-	case text == "/add_vk":
-		uc.msg.Auth(id)
 	case text == "/list":
 		uc.groupList(id)
 	case len(textSlice) >= commandWithParams:
@@ -52,21 +49,6 @@ func (uc *UserUseCase) TelegramCallback(telegramResult entity.TelegramResult) (e
 	}
 
 	return
-}
-
-// AuthToken - set access token.
-func (uc *UserUseCase) AuthToken(id, code string) {
-	token, err := uc.source.GetToken(code)
-	if err != nil {
-		uc.msg.UnknownError(id, "something wrong: "+err.Error())
-
-		return
-	}
-
-	err = uc.repo.AddToken(id, token, uc.source.Name())
-	if err != nil {
-		uc.msg.UnknownError(id, "something wrong: "+err.Error())
-	}
 }
 
 func (uc *UserUseCase) groupList(id string) {

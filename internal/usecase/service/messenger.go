@@ -37,10 +37,6 @@ func NewMessenger(token, baseURL string,
 	return &Messenger{baseURL, token, client, source, l}
 }
 
-func (m *Messenger) Auth(id string) {
-	m.sendMessage(id, "Ссылка для привязки соц сети: "+m.source.AuthURL())
-}
-
 func (m *Messenger) URLAdded(id string) {
 	m.sendMessage(id, "Ссылка на группу добавлена")
 }

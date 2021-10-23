@@ -30,32 +30,23 @@ func telegramResult(text string) entity.TelegramResult {
 	}
 }
 
-func user(t *testing.T) (*usecase.UserUseCase, *mocks.MockMessenger, *mocks.MockSource, *mocks.MockUserRepo) {
+func user(t *testing.T) (*usecase.UserUseCase, *mocks.MockMessenger, *mocks.MockUserRepo) {
 	t.Helper()
 
 	mockCtl := gomock.NewController(t)
 	repo := mocks.NewMockUserRepo(mockCtl)
-	webAPI := mocks.NewMockUserWebAPI(mockCtl)
 	messenger := mocks.NewMockMessenger(mockCtl)
 	source := mocks.NewMockSource(mockCtl)
 
-	newUser := usecase.NewUserUseCase(repo, webAPI, messenger, source)
+	newUser := usecase.NewUserUseCase(repo, messenger, source)
 
-	return newUser, messenger, source, repo
+	return newUser, messenger, repo
 }
 
 func TestTelegramCallback_correct(t *testing.T) {
 	t.Parallel()
 
-	userCase, message, _, repo := user(t)
-
-	t.Run("when add_vk", func(t *testing.T) {
-		t.Parallel()
-
-		message.EXPECT().Auth(userID).Return().Times(1)
-		err := userCase.TelegramCallback(telegramResult("/add_vk"))
-		require.ErrorIs(t, err, nil)
-	})
+	userCase, message, repo := user(t)
 
 	t.Run("when add_url", func(t *testing.T) {
 		t.Parallel()
@@ -103,7 +94,7 @@ func TestTelegramCallback_with_db_error(t *testing.T) {
 	t.Parallel()
 
 	errBD := gorm.ErrInvalidValue
-	userCase, message, _, repo := user(t)
+	userCase, message, repo := user(t)
 
 	t.Run("when add_url", func(t *testing.T) {
 		t.Parallel()
@@ -148,7 +139,7 @@ func TestTelegramCallback_with_db_error(t *testing.T) {
 func TestTelegramCallback_with_error_noParams(t *testing.T) {
 	t.Parallel()
 
-	userCase, message, _, _ := user(t)
+	userCase, message, _ := user(t)
 
 	t.Run("when add_url", func(t *testing.T) {
 		t.Parallel()
@@ -178,7 +169,7 @@ func TestTelegramCallback_with_error_noParams(t *testing.T) {
 func TestTelegramCallback_with_error_other(t *testing.T) {
 	t.Parallel()
 
-	userCase, message, _, _ := user(t)
+	userCase, message, _ := user(t)
 
 	t.Run("when is bot", func(t *testing.T) {
 		t.Parallel()
@@ -203,40 +194,5 @@ func TestTelegramCallback_with_error_other(t *testing.T) {
 		message.EXPECT().IncorrectFormat(userID, "unknown").Return().Times(1)
 		err := userCase.TelegramCallback(telegramResult("/incorrect_command 123"))
 		require.ErrorIs(t, err, nil)
-	})
-}
-
-func TestAuthToken(t *testing.T) {
-	t.Parallel()
-
-	userCase, message, source, repo := user(t)
-
-	t.Run("something wrong get token", func(t *testing.T) {
-		t.Parallel()
-
-		errBD := gorm.ErrInvalidValue
-		source.EXPECT().GetToken("code").Return("", errBD).Times(1)
-		message.EXPECT().UnknownError(userID, "something wrong: "+errBD.Error()).Return().Times(1)
-		userCase.AuthToken(userID, "code")
-	})
-
-	t.Run("something wrong add token", func(t *testing.T) {
-		t.Parallel()
-
-		errBD := gorm.ErrInvalidValue
-		source.EXPECT().GetToken("code").Return("token", nil).Times(1)
-		source.EXPECT().Name().Return("source").Times(1)
-		repo.EXPECT().AddToken(userID, "token", "source").Return(errBD).Times(1)
-		message.EXPECT().UnknownError(userID, "something wrong: "+errBD.Error()).Return().Times(1)
-		userCase.AuthToken(userID, "code")
-	})
-
-	t.Run("add token", func(t *testing.T) {
-		t.Parallel()
-
-		source.EXPECT().GetToken("code").Return("token", nil).Times(1)
-		source.EXPECT().Name().Return("source").Times(1)
-		repo.EXPECT().AddToken(userID, "token", "source").Return(nil).Times(1)
-		userCase.AuthToken(userID, "code")
 	})
 }
