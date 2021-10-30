@@ -5,8 +5,8 @@ import (
 )
 
 type User struct {
-	ID         uint      `gorm:"primaryKey"`
-	TelegramID uint      `gorm:"index"`
+	ID         uint64    `gorm:"primaryKey"`
+	TelegramID uint64    `gorm:"index"`
 	CreatedAt  time.Time `gorm:"not null"`
 	UpdatedAt  time.Time `gorm:"not null"`
 }

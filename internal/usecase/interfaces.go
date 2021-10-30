@@ -34,9 +34,9 @@ type (
 
 	// UserRepo - user db interaction.
 	UserRepo interface {
-		AddGroupByURL(id, url string) (err error)
+		AddGroupByURL(id, source, url string) (err error)
 		UpdateStartDate(id string, date time.Time) (err error)
-		RemoveGroup(id, url string) (err error)
+		RemoveGroup(id, source, url string) (err error)
 		Groups(id string) (groups []entity.Group, err error)
 	}
 )

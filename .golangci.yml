@@ -38,6 +38,7 @@ linters-settings:
           - condition
           - operation
           - return
+        ignored-numbers: 10,32,64
   govet:
     check-shadowing: true
   misspell:
@@ -91,7 +92,6 @@ linters:
     - nlreturn
     - noctx
     - nolintlint
-    - paralleltest
     - predeclared
     - revive
     - rowserrcheck

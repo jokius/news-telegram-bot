@@ -61,7 +61,7 @@ func (uc *UserUseCase) groupList(id string) {
 
 	list := make([]string, len(groups))
 	for i := range groups {
-		list[i] = groups[i].GroupLink
+		list[i] = groups[i].GroupName
 	}
 
 	uc.msg.GroupList(id, list)
@@ -83,7 +83,7 @@ func (uc *UserUseCase) messageWithParams(textSlice []string, id string) {
 }
 
 func (uc *UserUseCase) addURL(id, text string) {
-	err := uc.repo.AddGroupByURL(id, text)
+	err := uc.repo.AddGroupByURL(id, uc.source.Name(), text)
 	if err == nil {
 		uc.msg.URLAdded(id)
 	} else {
@@ -92,7 +92,7 @@ func (uc *UserUseCase) addURL(id, text string) {
 }
 
 func (uc *UserUseCase) removeGroup(id, text string) {
-	err := uc.repo.RemoveGroup(id, text)
+	err := uc.repo.RemoveGroup(id, uc.source.Name(), text)
 	if err == nil {
 		uc.msg.RemovedGroup(id)
 	} else {
