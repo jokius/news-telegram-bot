@@ -39,4 +39,9 @@ type (
 		RemoveGroup(id, source, url string) (err error)
 		Groups(id string) (groups []entity.Group, err error)
 	}
+
+	GroupRepo interface {
+		AllBySource(source string) (groups []entity.Group, err error)
+		Update(group *entity.Group) (err error)
+	}
 )

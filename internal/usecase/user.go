@@ -61,7 +61,7 @@ func (uc *UserUseCase) groupList(id string) {
 
 	list := make([]string, len(groups))
 	for i := range groups {
-		list[i] = groups[i].GroupName
+		list[i] = groups[i].Name
 	}
 
 	uc.msg.GroupList(id, list)

@@ -29,12 +29,12 @@ func (u UserRepo) AddGroupByURL(id, sourceName, url string) (err error) {
 	var group entity.Group
 
 	u.db.Query.
-		Where(&entity.Group{UserID: user.ID, SourceName: sourceName, GroupName: groupName}).
+		Where(&entity.Group{UserID: user.ID, SourceName: sourceName, Name: groupName}).
 		First(&group)
 
 	if group.ID == 0 {
 		t := time.Now()
-		group = entity.Group{UserID: user.ID, SourceName: sourceName, GroupName: groupName, LastUpdateAt: t,
+		group = entity.Group{UserID: user.ID, SourceName: sourceName, Name: groupName, LastUpdateAt: t,
 			CreatedAt: t, UpdatedAt: t}
 		err = u.db.Query.Create(&group).Error
 	}
@@ -66,7 +66,7 @@ func (u UserRepo) RemoveGroup(id, sourceName, url string) (err error) {
 
 	var group entity.Group
 	err = u.db.Query.
-		Where(&entity.Group{UserID: user.ID, SourceName: sourceName, GroupName: groupName}).
+		Where(&entity.Group{UserID: user.ID, SourceName: sourceName, Name: groupName}).
 		Delete(&group).
 		Error
 

@@ -16,12 +16,7 @@ import (
 	"gopkg.in/khaiql/dbcleaner.v2/engine"
 )
 
-const (
-	userID     = "1"
-	userIDUnit = 1
-)
-
-func buildRepo(t *testing.T) (*postgres.Postgres, *repo.UserRepo, dbcleaner.DbCleaner) {
+func buildUserRepo(t *testing.T) (*postgres.Postgres, *repo.UserRepo, dbcleaner.DbCleaner) {
 	t.Helper()
 
 	pgURL := os.Getenv("PG_URL_TEST")
@@ -40,11 +35,13 @@ func buildRepo(t *testing.T) (*postgres.Postgres, *repo.UserRepo, dbcleaner.DbCl
 }
 
 func TestAddGroupByURL(t *testing.T) {
-	pg, userRepo, cleaner := buildRepo(t)
+	pg, userRepo, cleaner := buildUserRepo(t)
 
 	t.Run("without user", func(t *testing.T) {
 		cleaner.Acquire("users")
 		cleaner.Acquire("groups")
+		cleaner.Clean("users")
+		cleaner.Clean("groups")
 
 		var user entity.User
 		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
@@ -57,7 +54,7 @@ func TestAddGroupByURL(t *testing.T) {
 		assert.NotEmpty(t, user)
 
 		var group entity.Group
-		pg.Query.Where(&entity.Group{UserID: user.ID, SourceName: "vk", GroupName: "group1"}).First(&group)
+		pg.Query.Where(&entity.Group{UserID: user.ID, SourceName: "vk", Name: "group1"}).First(&group)
 		assert.NotEmpty(t, group)
 
 		cleaner.Clean("users")
@@ -67,6 +64,8 @@ func TestAddGroupByURL(t *testing.T) {
 	t.Run("with user", func(t *testing.T) {
 		cleaner.Acquire("users")
 		cleaner.Acquire("groups")
+		cleaner.Clean("users")
+		cleaner.Clean("groups")
 
 		timeNow := time.Now()
 		user := entity.User{TelegramID: userIDUnit, CreatedAt: timeNow, UpdatedAt: timeNow}
@@ -77,7 +76,7 @@ func TestAddGroupByURL(t *testing.T) {
 		assert.ErrorIs(t, err, nil)
 
 		var group entity.Group
-		pg.Query.Where(&entity.Group{UserID: user.ID, SourceName: "vk", GroupName: "group1"}).First(&group)
+		pg.Query.Where(&entity.Group{UserID: user.ID, SourceName: "vk", Name: "group1"}).First(&group)
 		assert.NotEmpty(t, group)
 
 		cleaner.Clean("users")
@@ -86,11 +85,13 @@ func TestAddGroupByURL(t *testing.T) {
 }
 
 func TestUpdateStartDate(t *testing.T) {
-	pg, userRepo, cleaner := buildRepo(t)
+	pg, userRepo, cleaner := buildUserRepo(t)
 
 	t.Run("without user", func(t *testing.T) {
 		cleaner.Acquire("users")
 		cleaner.Acquire("groups")
+		cleaner.Clean("users")
+		cleaner.Clean("groups")
 
 		var user entity.User
 		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
@@ -110,6 +111,8 @@ func TestUpdateStartDate(t *testing.T) {
 	t.Run("with user", func(t *testing.T) {
 		cleaner.Acquire("users")
 		cleaner.Acquire("groups")
+		cleaner.Clean("users")
+		cleaner.Clean("groups")
 
 		timeNow := time.Now()
 		user := entity.User{TelegramID: userIDUnit, CreatedAt: timeNow, UpdatedAt: timeNow}
@@ -119,7 +122,7 @@ func TestUpdateStartDate(t *testing.T) {
 		group := entity.Group{
 			UserID:       user.ID,
 			SourceName:   "vk",
-			GroupName:    "group1",
+			Name:         "group1",
 			CreatedAt:    timeNow,
 			UpdatedAt:    timeNow,
 			LastUpdateAt: timeNow,
@@ -131,7 +134,7 @@ func TestUpdateStartDate(t *testing.T) {
 		err = userRepo.UpdateStartDate(userID, dayBefore)
 		assert.ErrorIs(t, err, nil)
 
-		pg.Query.Where(&entity.Group{UserID: user.ID, SourceName: "vk", GroupName: "group1"}).First(&group)
+		pg.Query.Where(&entity.Group{UserID: user.ID, SourceName: "vk", Name: "group1"}).First(&group)
 		assert.NotEmpty(t, group)
 		assert.Equal(t, group.LastUpdateAt, dayBefore)
 
@@ -141,11 +144,13 @@ func TestUpdateStartDate(t *testing.T) {
 }
 
 func TestRemoveGroup(t *testing.T) {
-	pg, userRepo, cleaner := buildRepo(t)
+	pg, userRepo, cleaner := buildUserRepo(t)
 
 	t.Run("without user", func(t *testing.T) {
 		cleaner.Acquire("users")
 		cleaner.Acquire("groups")
+		cleaner.Clean("users")
+		cleaner.Clean("groups")
 
 		var user entity.User
 		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
@@ -164,6 +169,8 @@ func TestRemoveGroup(t *testing.T) {
 	t.Run("with user", func(t *testing.T) {
 		cleaner.Acquire("users")
 		cleaner.Acquire("groups")
+		cleaner.Clean("users")
+		cleaner.Clean("groups")
 
 		timeNow := time.Now()
 		user := entity.User{TelegramID: userIDUnit, CreatedAt: timeNow, UpdatedAt: timeNow}
@@ -173,7 +180,7 @@ func TestRemoveGroup(t *testing.T) {
 		group := entity.Group{
 			UserID:       user.ID,
 			SourceName:   "vk",
-			GroupName:    "group1",
+			Name:         "group1",
 			CreatedAt:    timeNow,
 			UpdatedAt:    timeNow,
 			LastUpdateAt: timeNow,
@@ -185,7 +192,7 @@ func TestRemoveGroup(t *testing.T) {
 		assert.ErrorIs(t, err, nil)
 
 		var emptyGroup entity.Group
-		pg.Query.Where(&entity.Group{UserID: user.ID, SourceName: "vk", GroupName: "group1"}).First(&emptyGroup)
+		pg.Query.Where(&entity.Group{UserID: user.ID, SourceName: "vk", Name: "group1"}).First(&emptyGroup)
 		assert.Empty(t, emptyGroup)
 
 		cleaner.Clean("users")
@@ -194,11 +201,13 @@ func TestRemoveGroup(t *testing.T) {
 }
 
 func TestGroups(t *testing.T) {
-	pg, userRepo, cleaner := buildRepo(t)
+	pg, userRepo, cleaner := buildUserRepo(t)
 
 	t.Run("without user", func(t *testing.T) {
 		cleaner.Acquire("users")
 		cleaner.Acquire("groups")
+		cleaner.Clean("users")
+		cleaner.Clean("groups")
 
 		var user entity.User
 		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
@@ -218,6 +227,8 @@ func TestGroups(t *testing.T) {
 	t.Run("with user", func(t *testing.T) {
 		cleaner.Acquire("users")
 		cleaner.Acquire("groups")
+		cleaner.Clean("users")
+		cleaner.Clean("groups")
 
 		timeNow := time.Now().UTC()
 		user := entity.User{TelegramID: userIDUnit, CreatedAt: timeNow, UpdatedAt: timeNow}
@@ -227,7 +238,7 @@ func TestGroups(t *testing.T) {
 		group := entity.Group{
 			UserID:       user.ID,
 			SourceName:   "vk",
-			GroupName:    "group1",
+			Name:         "group1",
 			CreatedAt:    timeNow,
 			UpdatedAt:    timeNow,
 			LastUpdateAt: timeNow,

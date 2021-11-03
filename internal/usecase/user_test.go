@@ -82,7 +82,7 @@ func TestTelegramCallback_correct(t *testing.T) {
 		t.Parallel()
 
 		listStr := []string{"1"}
-		listGroups := []entity.Group{{GroupName: "1"}}
+		listGroups := []entity.Group{{Name: "1"}}
 		repo.EXPECT().Groups(userID).Return(listGroups, nil).Times(1)
 		message.EXPECT().GroupList(userID, listStr).Times(1)
 		err := userCase.TelegramCallback(telegramResult("/list"))
