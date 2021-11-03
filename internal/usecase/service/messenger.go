@@ -79,6 +79,10 @@ func (m *Messenger) UnknownError(id, text string) {
 	m.sendMessage(id, "Неизвестная ошибка: "+text)
 }
 
+func (m *Messenger) Message(id, text string) {
+	m.sendMessage(id, text)
+}
+
 func (m *Messenger) sendMessage(id, message string) {
 	url := m.baseURL + m.token
 	params := struct {
