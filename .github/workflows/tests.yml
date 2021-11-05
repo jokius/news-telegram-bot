@@ -26,8 +26,8 @@ jobs:
       - name: Install migration
         run: go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
       - name: Run migrations
-        run: migrate -path migrations -database 'postgres://user:pass@localhost:5432/app?sslmode=disable' up
+        run: migrate -path migrations -database 'postgres://user:pass@postgres:5432/app?sslmode=disable' up
       - name: Run tests
         env:
-          PG_URL_TEST: postgres://user:pass@localhost:5432/app?sslmode=disable
+          PG_URL_TEST: postgres://user:pass@postgres:5432/app?sslmode=disable
         run: go test ./..
