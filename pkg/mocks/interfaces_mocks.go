@@ -35,18 +35,6 @@ func (m *MockUser) EXPECT() *MockUserMockRecorder {
 	return m.recorder
 }
 
-// AuthToken mocks base method.
-func (m *MockUser) AuthToken(id, code string) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "AuthToken", id, code)
-}
-
-// AuthToken indicates an expected call of AuthToken.
-func (mr *MockUserMockRecorder) AuthToken(id, code interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AuthToken", reflect.TypeOf((*MockUser)(nil).AuthToken), id, code)
-}
-
 // TelegramCallback mocks base method.
 func (m *MockUser) TelegramCallback(arg0 entity.TelegramResult) error {
 	m.ctrl.T.Helper()
@@ -84,20 +72,8 @@ func (m *MockMessenger) EXPECT() *MockMessengerMockRecorder {
 	return m.recorder
 }
 
-// Auth mocks base method.
-func (m *MockMessenger) Auth(id string) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Auth", id)
-}
-
-// Auth indicates an expected call of Auth.
-func (mr *MockMessengerMockRecorder) Auth(id interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Auth", reflect.TypeOf((*MockMessenger)(nil).Auth), id)
-}
-
 // GroupList mocks base method.
-func (m *MockMessenger) GroupList(id string, groups []string) {
+func (m *MockMessenger) GroupList(id uint64, groups []string) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "GroupList", id, groups)
 }
@@ -109,7 +85,7 @@ func (mr *MockMessengerMockRecorder) GroupList(id, groups interface{}) *gomock.C
 }
 
 // IncorrectFormat mocks base method.
-func (m *MockMessenger) IncorrectFormat(id, command string) {
+func (m *MockMessenger) IncorrectFormat(id uint64, command string) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "IncorrectFormat", id, command)
 }
@@ -120,8 +96,20 @@ func (mr *MockMessengerMockRecorder) IncorrectFormat(id, command interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncorrectFormat", reflect.TypeOf((*MockMessenger)(nil).IncorrectFormat), id, command)
 }
 
+// Message mocks base method.
+func (m *MockMessenger) Message(id uint64, text string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Message", id, text)
+}
+
+// Message indicates an expected call of Message.
+func (mr *MockMessengerMockRecorder) Message(id, text interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Message", reflect.TypeOf((*MockMessenger)(nil).Message), id, text)
+}
+
 // RemovedGroup mocks base method.
-func (m *MockMessenger) RemovedGroup(id string) {
+func (m *MockMessenger) RemovedGroup(id uint64) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "RemovedGroup", id)
 }
@@ -133,7 +121,7 @@ func (mr *MockMessengerMockRecorder) RemovedGroup(id interface{}) *gomock.Call {
 }
 
 // StartDateUpdated mocks base method.
-func (m *MockMessenger) StartDateUpdated(id string) {
+func (m *MockMessenger) StartDateUpdated(id uint64) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "StartDateUpdated", id)
 }
@@ -145,7 +133,7 @@ func (mr *MockMessengerMockRecorder) StartDateUpdated(id interface{}) *gomock.Ca
 }
 
 // URLAdded mocks base method.
-func (m *MockMessenger) URLAdded(id string) {
+func (m *MockMessenger) URLAdded(id uint64) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "URLAdded", id)
 }
@@ -157,7 +145,7 @@ func (mr *MockMessengerMockRecorder) URLAdded(id interface{}) *gomock.Call {
 }
 
 // UnknownError mocks base method.
-func (m *MockMessenger) UnknownError(id, text string) {
+func (m *MockMessenger) UnknownError(id uint64, text string) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "UnknownError", id, text)
 }
@@ -169,7 +157,7 @@ func (mr *MockMessengerMockRecorder) UnknownError(id, text interface{}) *gomock.
 }
 
 // UnknownSource mocks base method.
-func (m *MockMessenger) UnknownSource(id, url string) {
+func (m *MockMessenger) UnknownSource(id uint64, url string) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "UnknownSource", id, url)
 }
@@ -203,45 +191,19 @@ func (m *MockSource) EXPECT() *MockSourceMockRecorder {
 	return m.recorder
 }
 
-// AuthURL mocks base method.
-func (m *MockSource) AuthURL() string {
+// GetGroupMessages mocks base method.
+func (m *MockSource) GetGroupMessages(id string, offset int) (entity.VkResult, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AuthURL")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// AuthURL indicates an expected call of AuthURL.
-func (mr *MockSourceMockRecorder) AuthURL() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AuthURL", reflect.TypeOf((*MockSource)(nil).AuthURL))
-}
-
-// GetGroupsMessages mocks base method.
-func (m *MockSource) GetGroupsMessages() {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "GetGroupsMessages")
-}
-
-// GetGroupsMessages indicates an expected call of GetGroupsMessages.
-func (mr *MockSourceMockRecorder) GetGroupsMessages() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupsMessages", reflect.TypeOf((*MockSource)(nil).GetGroupsMessages))
-}
-
-// GetToken mocks base method.
-func (m *MockSource) GetToken(code string) (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetToken", code)
-	ret0, _ := ret[0].(string)
+	ret := m.ctrl.Call(m, "GetGroupMessages", id, offset)
+	ret0, _ := ret[0].(entity.VkResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetToken indicates an expected call of GetToken.
-func (mr *MockSourceMockRecorder) GetToken(code interface{}) *gomock.Call {
+// GetGroupMessages indicates an expected call of GetGroupMessages.
+func (mr *MockSourceMockRecorder) GetGroupMessages(id, offset interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetToken", reflect.TypeOf((*MockSource)(nil).GetToken), code)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupMessages", reflect.TypeOf((*MockSource)(nil).GetGroupMessages), id, offset)
 }
 
 // Name mocks base method.
@@ -282,35 +244,21 @@ func (m *MockUserRepo) EXPECT() *MockUserRepoMockRecorder {
 }
 
 // AddGroupByURL mocks base method.
-func (m *MockUserRepo) AddGroupByURL(id, url string) error {
+func (m *MockUserRepo) AddGroupByURL(id uint64, source, url string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddGroupByURL", id, url)
+	ret := m.ctrl.Call(m, "AddGroupByURL", id, source, url)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // AddGroupByURL indicates an expected call of AddGroupByURL.
-func (mr *MockUserRepoMockRecorder) AddGroupByURL(id, url interface{}) *gomock.Call {
+func (mr *MockUserRepoMockRecorder) AddGroupByURL(id, source, url interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddGroupByURL", reflect.TypeOf((*MockUserRepo)(nil).AddGroupByURL), id, url)
-}
-
-// AddToken mocks base method.
-func (m *MockUserRepo) AddToken(id, token, sourceName string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddToken", id, token, sourceName)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// AddToken indicates an expected call of AddToken.
-func (mr *MockUserRepoMockRecorder) AddToken(id, token, sourceName interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddToken", reflect.TypeOf((*MockUserRepo)(nil).AddToken), id, token, sourceName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddGroupByURL", reflect.TypeOf((*MockUserRepo)(nil).AddGroupByURL), id, source, url)
 }
 
 // Groups mocks base method.
-func (m *MockUserRepo) Groups(id string) ([]entity.Group, error) {
+func (m *MockUserRepo) Groups(id uint64) ([]entity.Group, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Groups", id)
 	ret0, _ := ret[0].([]entity.Group)
@@ -325,21 +273,21 @@ func (mr *MockUserRepoMockRecorder) Groups(id interface{}) *gomock.Call {
 }
 
 // RemoveGroup mocks base method.
-func (m *MockUserRepo) RemoveGroup(id, url string) error {
+func (m *MockUserRepo) RemoveGroup(id uint64, source, url string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoveGroup", id, url)
+	ret := m.ctrl.Call(m, "RemoveGroup", id, source, url)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // RemoveGroup indicates an expected call of RemoveGroup.
-func (mr *MockUserRepoMockRecorder) RemoveGroup(id, url interface{}) *gomock.Call {
+func (mr *MockUserRepoMockRecorder) RemoveGroup(id, source, url interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveGroup", reflect.TypeOf((*MockUserRepo)(nil).RemoveGroup), id, url)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveGroup", reflect.TypeOf((*MockUserRepo)(nil).RemoveGroup), id, source, url)
 }
 
 // UpdateStartDate mocks base method.
-func (m *MockUserRepo) UpdateStartDate(id string, date time.Time) error {
+func (m *MockUserRepo) UpdateStartDate(id uint64, date time.Time) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateStartDate", id, date)
 	ret0, _ := ret[0].(error)
@@ -352,40 +300,105 @@ func (mr *MockUserRepoMockRecorder) UpdateStartDate(id, date interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateStartDate", reflect.TypeOf((*MockUserRepo)(nil).UpdateStartDate), id, date)
 }
 
-// MockUserWebAPI is a mock of UserWebAPI interface.
-type MockUserWebAPI struct {
+// MockGroupRepo is a mock of GroupRepo interface.
+type MockGroupRepo struct {
 	ctrl     *gomock.Controller
-	recorder *MockUserWebAPIMockRecorder
+	recorder *MockGroupRepoMockRecorder
 }
 
-// MockUserWebAPIMockRecorder is the mock recorder for MockUserWebAPI.
-type MockUserWebAPIMockRecorder struct {
-	mock *MockUserWebAPI
+// MockGroupRepoMockRecorder is the mock recorder for MockGroupRepo.
+type MockGroupRepoMockRecorder struct {
+	mock *MockGroupRepo
 }
 
-// NewMockUserWebAPI creates a new mock instance.
-func NewMockUserWebAPI(ctrl *gomock.Controller) *MockUserWebAPI {
-	mock := &MockUserWebAPI{ctrl: ctrl}
-	mock.recorder = &MockUserWebAPIMockRecorder{mock}
+// NewMockGroupRepo creates a new mock instance.
+func NewMockGroupRepo(ctrl *gomock.Controller) *MockGroupRepo {
+	mock := &MockGroupRepo{ctrl: ctrl}
+	mock.recorder = &MockGroupRepoMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUserWebAPI) EXPECT() *MockUserWebAPIMockRecorder {
+func (m *MockGroupRepo) EXPECT() *MockGroupRepoMockRecorder {
 	return m.recorder
 }
 
-// VkCallback mocks base method.
-func (m *MockUserWebAPI) VkCallback(arg0 *entity.User) (entity.User, error) {
+// AllBySource mocks base method.
+func (m *MockGroupRepo) AllBySource(source string) ([]entity.Group, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "VkCallback", arg0)
-	ret0, _ := ret[0].(entity.User)
+	ret := m.ctrl.Call(m, "AllBySource", source)
+	ret0, _ := ret[0].([]entity.Group)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// VkCallback indicates an expected call of VkCallback.
-func (mr *MockUserWebAPIMockRecorder) VkCallback(arg0 interface{}) *gomock.Call {
+// AllBySource indicates an expected call of AllBySource.
+func (mr *MockGroupRepoMockRecorder) AllBySource(source interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VkCallback", reflect.TypeOf((*MockUserWebAPI)(nil).VkCallback), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllBySource", reflect.TypeOf((*MockGroupRepo)(nil).AllBySource), source)
+}
+
+// Update mocks base method.
+func (m *MockGroupRepo) Update(group *entity.Group) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", group)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockGroupRepoMockRecorder) Update(group interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockGroupRepo)(nil).Update), group)
+}
+
+// MockMessageRepo is a mock of MessageRepo interface.
+type MockMessageRepo struct {
+	ctrl     *gomock.Controller
+	recorder *MockMessageRepoMockRecorder
+}
+
+// MockMessageRepoMockRecorder is the mock recorder for MockMessageRepo.
+type MockMessageRepoMockRecorder struct {
+	mock *MockMessageRepo
+}
+
+// NewMockMessageRepo creates a new mock instance.
+func NewMockMessageRepo(ctrl *gomock.Controller) *MockMessageRepo {
+	mock := &MockMessageRepo{ctrl: ctrl}
+	mock.recorder = &MockMessageRepoMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockMessageRepo) EXPECT() *MockMessageRepoMockRecorder {
+	return m.recorder
+}
+
+// Add mocks base method.
+func (m *MockMessageRepo) Add(groupID, messageID uint64, source string, messageAt time.Time) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Add", groupID, messageID, source, messageAt)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Add indicates an expected call of Add.
+func (mr *MockMessageRepoMockRecorder) Add(groupID, messageID, source, messageAt interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockMessageRepo)(nil).Add), groupID, messageID, source, messageAt)
+}
+
+// Last mocks base method.
+func (m *MockMessageRepo) Last(groupID uint64) entity.Message {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Last", groupID)
+	ret0, _ := ret[0].(entity.Message)
+	return ret0
+}
+
+// Last indicates an expected call of Last.
+func (mr *MockMessageRepoMockRecorder) Last(groupID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Last", reflect.TypeOf((*MockMessageRepo)(nil).Last), groupID)
 }
