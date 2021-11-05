@@ -49,6 +49,20 @@ func (mr *MockInterfaceClientMockRecorder) Get(url interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockInterfaceClient)(nil).Get), url)
 }
 
+// GetJSON mocks base method.
+func (m *MockInterfaceClient) GetJSON(url string, target interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetJSON", url, target)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetJSON indicates an expected call of GetJSON.
+func (mr *MockInterfaceClientMockRecorder) GetJSON(url, target interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetJSON", reflect.TypeOf((*MockInterfaceClient)(nil).GetJSON), url, target)
+}
+
 // Post mocks base method.
 func (m *MockInterfaceClient) Post(url string, body []byte) (*http.Response, error) {
 	m.ctrl.T.Helper()
