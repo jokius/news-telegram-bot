@@ -4,7 +4,7 @@ create table messages
         constraint message_pk
             primary key,
     group_id bigint not null,
-    message_id varchar not null,
+    message_id bigint not null,
     source varchar not null,
     message_at timestamp not null,
     created_at timestamp not null,
