@@ -16,9 +16,15 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.17.2'
       # required to compile pg ruby gem
       - name: install PostgreSQL client
         run: sudo apt-get install libpq-dev
+      - name: Install migration
+        run: go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
       - name: Run migrations
         run: migrate -path migrations -database 'postgres://user:pass@localhost:5432/app?sslmode=disable' up
       - name: Run tests
