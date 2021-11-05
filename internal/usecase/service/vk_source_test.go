@@ -43,9 +43,8 @@ func TestGetGroupMessages(t *testing.T) {
 
 		id := "test_id"
 		offset := 100
-		url := "https://api.vk.com/method/wall.get?v=5.131&count=100&access_token=token&posts=test_id&offset=100"
-		result := entity.VkResult{}
-		client.EXPECT().GetJSON(url, result).Times(1)
+		url := "https://api.vk.com/method/wall.get?v=5.131&count=100&access_token=token&domain=test_id&offset=100"
+		client.EXPECT().GetJSON(url, &entity.VkResponse{}).Times(1)
 		_, err := source.GetGroupMessages(id, offset)
 		assert.ErrorIs(t, err, nil)
 	})

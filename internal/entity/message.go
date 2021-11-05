@@ -7,7 +7,7 @@ import (
 type Message struct {
 	ID        uint64    `gorm:"primaryKey"`
 	GroupID   uint64    `gorm:"not null;index"`
-	MessageID string    `gorm:"not null"`
+	MessageID uint64    `gorm:"not null"`
 	Source    string    `gorm:"not null"`
 	MessageAt time.Time `gorm:"not null"`
 	CreatedAt time.Time `gorm:"not null"`

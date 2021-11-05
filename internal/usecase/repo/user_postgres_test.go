@@ -44,13 +44,13 @@ func TestAddGroupByURL(t *testing.T) {
 		cleaner.Clean("groups")
 
 		var user entity.User
-		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
+		pg.Query.Where(&entity.User{TelegramID: userID}).First(&user)
 		assert.Empty(t, user)
 
 		err := userRepo.AddGroupByURL(userID, "vk", "https://example.com/group1")
 		assert.ErrorIs(t, err, nil)
 
-		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
+		pg.Query.Where(&entity.User{TelegramID: userID}).First(&user)
 		assert.NotEmpty(t, user)
 
 		var group entity.Group
@@ -68,7 +68,7 @@ func TestAddGroupByURL(t *testing.T) {
 		cleaner.Clean("groups")
 
 		timeNow := time.Now()
-		user := entity.User{TelegramID: userIDUnit, CreatedAt: timeNow, UpdatedAt: timeNow}
+		user := entity.User{TelegramID: userID, CreatedAt: timeNow, UpdatedAt: timeNow}
 		err := pg.Query.Create(&user).Error
 		assert.ErrorIs(t, err, nil)
 
@@ -94,14 +94,14 @@ func TestUpdateStartDate(t *testing.T) {
 		cleaner.Clean("groups")
 
 		var user entity.User
-		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
+		pg.Query.Where(&entity.User{TelegramID: userID}).First(&user)
 		assert.Empty(t, user)
 
 		timeNow := time.Now()
 		err := userRepo.UpdateStartDate(userID, timeNow)
 		assert.ErrorIs(t, err, nil)
 
-		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
+		pg.Query.Where(&entity.User{TelegramID: userID}).First(&user)
 		assert.NotEmpty(t, user)
 
 		cleaner.Clean("users")
@@ -115,7 +115,7 @@ func TestUpdateStartDate(t *testing.T) {
 		cleaner.Clean("groups")
 
 		timeNow := time.Now()
-		user := entity.User{TelegramID: userIDUnit, CreatedAt: timeNow, UpdatedAt: timeNow}
+		user := entity.User{TelegramID: userID, CreatedAt: timeNow, UpdatedAt: timeNow}
 		err := pg.Query.Create(&user).Error
 		assert.ErrorIs(t, err, nil)
 
@@ -153,13 +153,13 @@ func TestRemoveGroup(t *testing.T) {
 		cleaner.Clean("groups")
 
 		var user entity.User
-		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
+		pg.Query.Where(&entity.User{TelegramID: userID}).First(&user)
 		assert.Empty(t, user)
 
 		err := userRepo.RemoveGroup(userID, "vk", "https://example.com/group1")
 		assert.ErrorIs(t, err, nil)
 
-		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
+		pg.Query.Where(&entity.User{TelegramID: userID}).First(&user)
 		assert.NotEmpty(t, user)
 
 		cleaner.Clean("users")
@@ -173,7 +173,7 @@ func TestRemoveGroup(t *testing.T) {
 		cleaner.Clean("groups")
 
 		timeNow := time.Now()
-		user := entity.User{TelegramID: userIDUnit, CreatedAt: timeNow, UpdatedAt: timeNow}
+		user := entity.User{TelegramID: userID, CreatedAt: timeNow, UpdatedAt: timeNow}
 		err := pg.Query.Create(&user).Error
 		assert.ErrorIs(t, err, nil)
 
@@ -210,14 +210,14 @@ func TestGroups(t *testing.T) {
 		cleaner.Clean("groups")
 
 		var user entity.User
-		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
+		pg.Query.Where(&entity.User{TelegramID: userID}).First(&user)
 		assert.Empty(t, user)
 
 		groups, err := userRepo.Groups(userID)
 		assert.ErrorIs(t, err, nil)
 		assert.Empty(t, groups)
 
-		pg.Query.Where(&entity.User{TelegramID: userIDUnit}).First(&user)
+		pg.Query.Where(&entity.User{TelegramID: userID}).First(&user)
 		assert.NotEmpty(t, user)
 
 		cleaner.Clean("users")
@@ -231,7 +231,7 @@ func TestGroups(t *testing.T) {
 		cleaner.Clean("groups")
 
 		timeNow := time.Now().UTC()
-		user := entity.User{TelegramID: userIDUnit, CreatedAt: timeNow, UpdatedAt: timeNow}
+		user := entity.User{TelegramID: userID, CreatedAt: timeNow, UpdatedAt: timeNow}
 		err := pg.Query.Create(&user).Error
 		assert.ErrorIs(t, err, nil)
 

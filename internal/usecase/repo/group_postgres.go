@@ -17,6 +17,7 @@ func NewGroupRepo(pg *postgres.Postgres) *GroupRepo {
 
 func (g GroupRepo) AllBySource(source string) (groups []entity.Group, err error) {
 	err = g.db.Query.
+		Preload("User").
 		Model(&entity.Group{}).
 		Where(&entity.Group{SourceName: source}).
 		Find(&groups).Error

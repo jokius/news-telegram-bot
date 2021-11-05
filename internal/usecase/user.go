@@ -51,10 +51,10 @@ func (uc *UserUseCase) TelegramCallback(telegramResult entity.TelegramResult) (e
 	return
 }
 
-func (uc *UserUseCase) groupList(id string) {
+func (uc *UserUseCase) groupList(id uint64) {
 	groups, err := uc.repo.Groups(id)
 	if err != nil {
-		uc.msg.UnknownError(id, "something wrong: "+err.Error())
+		uc.msg.UnknownError(id, "`uc.groupList` something wrong: "+err.Error())
 
 		return
 	}
@@ -67,7 +67,7 @@ func (uc *UserUseCase) groupList(id string) {
 	uc.msg.GroupList(id, list)
 }
 
-func (uc *UserUseCase) messageWithParams(textSlice []string, id string) {
+func (uc *UserUseCase) messageWithParams(textSlice []string, id uint64) {
 	text := textSlice[1]
 
 	switch textSlice[0] {
@@ -82,7 +82,7 @@ func (uc *UserUseCase) messageWithParams(textSlice []string, id string) {
 	}
 }
 
-func (uc *UserUseCase) addURL(id, text string) {
+func (uc *UserUseCase) addURL(id uint64, text string) {
 	err := uc.repo.AddGroupByURL(id, uc.source.Name(), text)
 	if err == nil {
 		uc.msg.URLAdded(id)
@@ -91,7 +91,7 @@ func (uc *UserUseCase) addURL(id, text string) {
 	}
 }
 
-func (uc *UserUseCase) removeGroup(id, text string) {
+func (uc *UserUseCase) removeGroup(id uint64, text string) {
 	err := uc.repo.RemoveGroup(id, uc.source.Name(), text)
 	if err == nil {
 		uc.msg.RemovedGroup(id)
@@ -100,7 +100,7 @@ func (uc *UserUseCase) removeGroup(id, text string) {
 	}
 }
 
-func (uc *UserUseCase) startDate(id, text string) {
+func (uc *UserUseCase) startDate(id uint64, text string) {
 	t, err := time.Parse("02.01.2006", text)
 	if err != nil {
 		uc.msg.IncorrectFormat(id, "start_date")
@@ -116,6 +116,6 @@ func (uc *UserUseCase) startDate(id, text string) {
 	}
 }
 
-func (uc *UserUseCase) errBD(id string, err error) {
-	uc.msg.UnknownError(id, "something wrong: "+err.Error())
+func (uc *UserUseCase) errBD(id uint64, err error) {
+	uc.msg.UnknownError(id, "`uc.errBD` something wrong: "+err.Error())
 }

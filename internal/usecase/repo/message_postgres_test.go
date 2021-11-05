@@ -42,7 +42,7 @@ func TestAddMessage(t *testing.T) {
 		cleaner.Clean("messages")
 
 		messageAt := time.Now().UTC()
-		err := messageRepo.Add(groupID, "vk", messageID, messageAt)
+		err := messageRepo.Add(groupID, messageID, "vk", messageAt)
 		assert.ErrorIs(t, err, nil)
 
 		var message entity.Message
@@ -69,7 +69,7 @@ func TestLastMessage(t *testing.T) {
 		dayBefore := time.Now().AddDate(0, 0, -1).UTC()
 		err := pg.Query.Create(&entity.Message{
 			GroupID:   groupID,
-			MessageID: "2",
+			MessageID: 2,
 			Source:    "vk",
 			MessageAt: dayBefore,
 			CreatedAt: messageAt,

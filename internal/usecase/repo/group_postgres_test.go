@@ -44,7 +44,7 @@ func TestAllBySource(t *testing.T) {
 		cleaner.Clean("groups")
 
 		timeNow := time.Now().UTC()
-		user := entity.User{TelegramID: userIDUnit, CreatedAt: timeNow, UpdatedAt: timeNow}
+		user := entity.User{TelegramID: userID, CreatedAt: timeNow, UpdatedAt: timeNow}
 		err := pg.Query.Create(&user).Error
 		assert.ErrorIs(t, err, nil)
 
@@ -60,6 +60,7 @@ func TestAllBySource(t *testing.T) {
 		assert.ErrorIs(t, err, nil)
 		assert.NotEmpty(t, groups)
 		assert.Equal(t, len(groups), 1)
+		assert.NotEmpty(t, groups[0].User)
 
 		cleaner.Clean("users")
 		cleaner.Clean("groups")
@@ -76,7 +77,7 @@ func TestUpdateGroup(t *testing.T) {
 		cleaner.Clean("groups")
 
 		timeNow := time.Now().UTC()
-		user := entity.User{TelegramID: userIDUnit, CreatedAt: timeNow, UpdatedAt: timeNow}
+		user := entity.User{TelegramID: userID, CreatedAt: timeNow, UpdatedAt: timeNow}
 		err := pg.Query.Create(&user).Error
 		assert.ErrorIs(t, err, nil)
 

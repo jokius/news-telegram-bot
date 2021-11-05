@@ -25,13 +25,14 @@ func (v *VkSource) Name() string {
 	return v.name
 }
 
-func (v *VkSource) GetGroupMessages(id string, offset int) (result entity.VkResult, err error) {
+func (v *VkSource) GetGroupMessages(id string, offset int) (entity.VkResult, error) {
 	url := baseURL +
 		"&access_token=" + v.token +
-		"&posts=" + id +
+		"&domain=" + id +
 		"&offset=" + strconv.Itoa(offset)
 
-	err = v.client.GetJSON(url, result)
+	var response entity.VkResponse
+	err := v.client.GetJSON(url, &response)
 
-	return
+	return response.VkResult, err
 }

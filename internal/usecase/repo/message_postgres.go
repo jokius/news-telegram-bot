@@ -15,7 +15,7 @@ func NewMessageRepo(pg *postgres.Postgres) *MessageRepo {
 	return &MessageRepo{pg}
 }
 
-func (m MessageRepo) Add(groupID uint64, source, messageID string, messageAt time.Time) error {
+func (m MessageRepo) Add(groupID, messageID uint64, source string, messageAt time.Time) error {
 	t := time.Now()
 	message := entity.Message{
 		GroupID:   groupID,

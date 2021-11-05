@@ -13,14 +13,14 @@ import (
 
 const (
 	testBaseURL = "https://telegram.test.url/"
-	userID      = "1"
+	userID      = 1
 	token       = "token"
-	url         = "https://telegram.test.url/token"
+	url         = "https://telegram.test.url/token/sendMessage"
 )
 
 func marshalJSON(text string) ([]byte, error) {
 	params := struct {
-		ChatID string `json:"chat_id"`
+		ChatID uint64 `json:"chat_id"`
 		Text   string `json:"text"`
 	}{userID, text}
 

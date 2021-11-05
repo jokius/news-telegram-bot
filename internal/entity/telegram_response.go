@@ -10,6 +10,6 @@ type TelegramMessage struct {
 }
 
 type TelegramUser struct {
-	ID    string `json:"id"`
+	ID    uint64 `json:"id"`
 	IsBot bool   `json:"is_bot"`
 }

@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	userID   = "1"
-	timeText = "10.11.2021"
+	userID   uint64 = 1
+	timeText        = "10.11.2021"
 )
 
 func telegramResult(text string) entity.TelegramResult {
@@ -30,7 +30,7 @@ func telegramResult(text string) entity.TelegramResult {
 	}
 }
 
-func user(t *testing.T) (*usecase.UserUseCase, *mocks.MockMessenger, *mocks.MockUserRepo) {
+func user(t *testing.T) (*usecase.UserUseCase, *mocks.MockMessenger, *mocks.MockUserRepo, *mocks.MockSource) {
 	t.Helper()
 
 	mockCtl := gomock.NewController(t)
@@ -40,17 +40,18 @@ func user(t *testing.T) (*usecase.UserUseCase, *mocks.MockMessenger, *mocks.Mock
 
 	newUser := usecase.NewUserUseCase(repo, messenger, source)
 
-	return newUser, messenger, repo
+	return newUser, messenger, repo, source
 }
 
 func TestTelegramCallback_correct(t *testing.T) {
 	t.Parallel()
 
-	userCase, message, repo := user(t)
+	userCase, message, repo, source := user(t)
 
 	t.Run("when add_url", func(t *testing.T) {
 		t.Parallel()
 
+		source.EXPECT().Name().Return("vk").Times(1)
 		repo.EXPECT().AddGroupByURL(userID, "vk", "https://example.com/1").Return(nil).Times(1)
 		message.EXPECT().URLAdded(userID).Return().Times(1)
 		err := userCase.TelegramCallback(telegramResult("/add_url https://example.com/1"))
@@ -72,6 +73,7 @@ func TestTelegramCallback_correct(t *testing.T) {
 	t.Run("when del_group", func(t *testing.T) {
 		t.Parallel()
 
+		source.EXPECT().Name().Return("vk").Times(1)
 		repo.EXPECT().RemoveGroup(userID, "vk", "https://example.com/1").Return(nil).Times(1)
 		message.EXPECT().RemovedGroup(userID).Return().Times(1)
 		err := userCase.TelegramCallback(telegramResult("/del_group https://example.com/1"))
@@ -94,13 +96,14 @@ func TestTelegramCallback_with_db_error(t *testing.T) {
 	t.Parallel()
 
 	errBD := gorm.ErrInvalidValue
-	userCase, message, repo := user(t)
+	userCase, message, repo, source := user(t)
 
 	t.Run("when add_url", func(t *testing.T) {
 		t.Parallel()
 
+		source.EXPECT().Name().Return("vk").Times(1)
 		repo.EXPECT().AddGroupByURL(userID, "vk", "https://example.com/1").Return(errBD).Times(1) // any error
-		message.EXPECT().UnknownError(userID, "something wrong: "+errBD.Error()).Return().Times(1)
+		message.EXPECT().UnknownError(userID, "`uc.errBD` something wrong: "+errBD.Error()).Return().Times(1)
 		err := userCase.TelegramCallback(telegramResult("/add_url https://example.com/1"))
 		require.ErrorIs(t, err, nil)
 	})
@@ -112,7 +115,7 @@ func TestTelegramCallback_with_db_error(t *testing.T) {
 		require.ErrorIs(t, err, nil)
 
 		repo.EXPECT().UpdateStartDate(userID, timeParse).Return(errBD).Times(1)
-		message.EXPECT().UnknownError(userID, "something wrong: "+errBD.Error()).Return().Times(1)
+		message.EXPECT().UnknownError(userID, "`uc.errBD` something wrong: "+errBD.Error()).Return().Times(1)
 		err = userCase.TelegramCallback(telegramResult("/start_date " + timeText))
 		require.ErrorIs(t, err, nil)
 	})
@@ -120,8 +123,9 @@ func TestTelegramCallback_with_db_error(t *testing.T) {
 	t.Run("when del_group", func(t *testing.T) {
 		t.Parallel()
 
+		source.EXPECT().Name().Return("vk").Times(1)
 		repo.EXPECT().RemoveGroup(userID, "vk", "https://example.com/1").Return(errBD).Times(1) // any error
-		message.EXPECT().UnknownError(userID, "something wrong: "+errBD.Error()).Return().Times(1)
+		message.EXPECT().UnknownError(userID, "`uc.errBD` something wrong: "+errBD.Error()).Return().Times(1)
 		err := userCase.TelegramCallback(telegramResult("/del_group https://example.com/1"))
 		require.ErrorIs(t, err, nil)
 	})
@@ -130,7 +134,7 @@ func TestTelegramCallback_with_db_error(t *testing.T) {
 		t.Parallel()
 
 		repo.EXPECT().Groups(userID).Return([]entity.Group{}, errBD).Times(1) // any error
-		message.EXPECT().UnknownError(userID, "something wrong: "+errBD.Error()).Return().Times(1)
+		message.EXPECT().UnknownError(userID, "`uc.groupList` something wrong: "+errBD.Error()).Return().Times(1)
 		err := userCase.TelegramCallback(telegramResult("/list"))
 		require.ErrorIs(t, err, nil)
 	})
@@ -139,7 +143,7 @@ func TestTelegramCallback_with_db_error(t *testing.T) {
 func TestTelegramCallback_with_error_noParams(t *testing.T) {
 	t.Parallel()
 
-	userCase, message, _ := user(t)
+	userCase, message, _, _ := user(t)
 
 	t.Run("when add_url", func(t *testing.T) {
 		t.Parallel()
@@ -169,7 +173,7 @@ func TestTelegramCallback_with_error_noParams(t *testing.T) {
 func TestTelegramCallback_with_error_other(t *testing.T) {
 	t.Parallel()
 
-	userCase, message, _ := user(t)
+	userCase, message, _, _ := user(t)
 
 	t.Run("when is bot", func(t *testing.T) {
 		t.Parallel()

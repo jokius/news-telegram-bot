@@ -1,7 +1,6 @@
 package repo
 
 import (
-	"strconv"
 	"strings"
 	"time"
 
@@ -17,7 +16,7 @@ func NewUserRepo(pg *postgres.Postgres) *UserRepo {
 	return &UserRepo{pg}
 }
 
-func (u UserRepo) AddGroupByURL(id, sourceName, url string) (err error) {
+func (u UserRepo) AddGroupByURL(id uint64, sourceName, url string) (err error) {
 	user, err := u.findOrCreateUser(id)
 	if err != nil {
 		return
@@ -42,7 +41,7 @@ func (u UserRepo) AddGroupByURL(id, sourceName, url string) (err error) {
 	return
 }
 
-func (u UserRepo) UpdateStartDate(id string, date time.Time) (err error) {
+func (u UserRepo) UpdateStartDate(id uint64, date time.Time) (err error) {
 	user, err := u.findOrCreateUser(id)
 	if err != nil {
 		return
@@ -55,7 +54,7 @@ func (u UserRepo) UpdateStartDate(id string, date time.Time) (err error) {
 		Error
 }
 
-func (u UserRepo) RemoveGroup(id, sourceName, url string) (err error) {
+func (u UserRepo) RemoveGroup(id uint64, sourceName, url string) (err error) {
 	user, err := u.findOrCreateUser(id)
 	if err != nil {
 		return
@@ -73,7 +72,7 @@ func (u UserRepo) RemoveGroup(id, sourceName, url string) (err error) {
 	return
 }
 
-func (u UserRepo) Groups(id string) (groups []entity.Group, err error) {
+func (u UserRepo) Groups(id uint64) (groups []entity.Group, err error) {
 	user, err := u.findOrCreateUser(id)
 	if err != nil {
 		return
@@ -84,8 +83,7 @@ func (u UserRepo) Groups(id string) (groups []entity.Group, err error) {
 	return
 }
 
-func (u UserRepo) findOrCreateUser(rawID string) (user entity.User, err error) {
-	id, err := strconv.ParseUint(rawID, 10, 64)
+func (u UserRepo) findOrCreateUser(id uint64) (user entity.User, err error) {
 	if err != nil {
 		return
 	}
