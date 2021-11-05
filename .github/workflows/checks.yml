@@ -1,4 +1,4 @@
-name: CI
+name: checks
 on: pull_request
 
 jobs:
@@ -63,33 +63,3 @@ jobs:
       - name: Nancy
         uses: sonatype-nexus-community/nancy-github-action@main
         continue-on-error: true
-
-  tests:
-    name: runner / tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: 1.17
-
-      - name: Unit Tests
-        run: "go test \
-          -v \
-          -race \
-          -covermode atomic \
-          -coverprofile=coverage.txt \
-          ./internal/..."
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v1.0.2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: coverage.txt
-          flags: unittests
-          name: codecov-umbrella
-
-      - name: Integration tests
-        run: "docker-compose up \
-          --build \
-          --abort-on-container-exit \
-          --exit-code-from integration"
