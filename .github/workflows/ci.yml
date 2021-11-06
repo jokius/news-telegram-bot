@@ -88,10 +88,7 @@ jobs:
         run: go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
       - name: Run migrations
         run: |
-          curl -L https://packagecloud.io/golang-migrate/migrate/gpgkey | apt-key add -
-          echo "deb https://packagecloud.io/golang-migrate/migrate/ubuntu/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/migrate.list
-          apt-get update
-          apt-get install -y migrate
+          go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
       - name: Run tests
         env:
           PG_URL_TEST: postgres://user:pass@postgres:5432/app?sslmode=disable
