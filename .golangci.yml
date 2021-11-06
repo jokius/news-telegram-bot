@@ -1,6 +1,4 @@
 linters-settings:
-  gci:
-    local-prefixes: github.com/jokius/news-telegram-bot
   dupl:
     threshold: 100
   errorlint:
@@ -31,8 +29,6 @@ linters-settings:
     disabled-checks:
       - dupImport
       - unnecessaryBlock
-  gofumpt:
-    extra-rules: true
   gomnd:
     settings:
       mnd:
@@ -42,6 +38,7 @@ linters-settings:
           - condition
           - operation
           - return
+        ignored-numbers: 10,32,64
   govet:
     check-shadowing: true
   misspell:
@@ -80,7 +77,6 @@ linters:
     - godox
     - goerr113
     - gofmt
-    - gofumpt
     - goimports
     - gomnd
     - gomodguard
@@ -96,7 +92,6 @@ linters:
     - nlreturn
     - noctx
     - nolintlint
-    - paralleltest
     - predeclared
     - revive
     - rowserrcheck
@@ -131,7 +126,3 @@ issues:
     - path: internal/controller/http
       linters:
         - godot
-
-run:
-  skip-dirs:
-    - docs

@@ -48,4 +48,5 @@ mock:
 
 migrate-up:
 	migrate -path migrations -database '$(PG_URL)?sslmode=disable' up
+	migrate -path migrations -database '$(PG_URL_TEST)?sslmode=disable' up
 .PHONY: migrate-up

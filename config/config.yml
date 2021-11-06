@@ -11,3 +11,9 @@ logger:
 
 postgres:
   pool_max: 2
+
+telegram:
+  base_url: 'https://api.telegram.org/'
+
+grabber:
+  sleep: 3600

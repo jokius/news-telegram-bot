@@ -4,16 +4,22 @@ import (
 	"log"
 
 	"github.com/ilyakaznacheev/cleanenv"
-
-	"github.com/evrone/go-clean-template/config"
-	"github.com/evrone/go-clean-template/internal/app"
+	"github.com/joho/godotenv"
+	"github.com/jokius/news-telegram-bot/config"
+	"github.com/jokius/news-telegram-bot/internal/app"
 )
 
 func main() {
 	// Configuration
 	var cfg config.Config
 
-	err := cleanenv.ReadConfig("./config/config.yml", &cfg)
+	// ENV
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	err = cleanenv.ReadConfig("./config/config.yml", &cfg)
 	if err != nil {
 		log.Fatalf("Config error: %s", err)
 	}

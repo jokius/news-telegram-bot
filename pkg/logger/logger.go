@@ -8,8 +8,10 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// Interface -.
-type Interface interface {
+//go:generate mockgen -source=logger.go -destination=../mocks/logger_mocks.go -package=mocks
+
+// InterfaceLogger -.
+type InterfaceLogger interface {
 	Debug(message interface{}, args ...interface{})
 	Info(message string, args ...interface{})
 	Warn(message string, args ...interface{})
@@ -22,7 +24,7 @@ type Logger struct {
 	logger *zerolog.Logger
 }
 
-var _ Interface = (*Logger)(nil)
+var _ InterfaceLogger = (*Logger)(nil)
 
 // New -.
 func New(level string) *Logger {
