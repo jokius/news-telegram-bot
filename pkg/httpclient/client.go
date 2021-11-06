@@ -48,7 +48,7 @@ func NewClient(opts ...Option) *Client {
 // Get - GET request with timeout.
 func (s *Client) Get(url string) (*http.Response, error) {
 	ctx := context.Background()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
 
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (s *Client) Get(url string) (*http.Response, error) {
 // GetJSON - GET request with timeout and json response.
 func (s *Client) GetJSON(url string, target interface{}) error {
 	ctx := context.Background()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
 
 	if err != nil {
 		return err
