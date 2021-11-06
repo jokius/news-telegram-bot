@@ -1,4 +1,4 @@
-name: checks
+name: ci
 on: pull_request
 
 jobs:
@@ -63,3 +63,36 @@ jobs:
       - name: Nancy
         uses: sonatype-nexus-community/nancy-github-action@main
         continue-on-error: true
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: pass
+          POSTGRES_DB: app
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.17.2'
+      env:
+        PG_URL_TEST: postgres://user:pass@postgres:5432/app?sslmode=disable
+      - name: Install go deprections
+        run: go mod download
+      - name: Install migration
+        run: go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+      - name: Run migrations
+        run: |
+          curl -L https://packagecloud.io/golang-migrate/migrate/gpgkey | apt-key add -
+          echo "deb https://packagecloud.io/golang-migrate/migrate/ubuntu/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/migrate.list
+          apt-get update
+          apt-get install -y migrate
+      - name: Run tests
+        run: go test ./..
