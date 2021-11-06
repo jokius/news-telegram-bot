@@ -82,8 +82,6 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '1.17.2'
-      env:
-        PG_URL_TEST: postgres://user:pass@postgres:5432/app?sslmode=disable
       - name: Install go deprections
         run: go mod download
       - name: Install migration
@@ -95,4 +93,6 @@ jobs:
           apt-get update
           apt-get install -y migrate
       - name: Run tests
+        env:
+          PG_URL_TEST: postgres://user:pass@postgres:5432/app?sslmode=disable
         run: go test ./..
